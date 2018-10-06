@@ -1,0 +1,17 @@
+#!/bin/sh
+
+outname="_output_temp.gif"
+if [ $# -lt 1 ]; then
+    echo "please specify the input video"
+    exit
+fi
+
+# fps=`ffprobe -i "$name" 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p"`
+
+ffmpeg -loglevel panic -i $1 -f image2pipe -vcodec ppm - | \
+  convert -delay 4 -loop 0 - $outname
+
+imgcat $outname
+
+rm $outname
+

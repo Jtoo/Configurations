@@ -1,0 +1,27 @@
+#!/bin/sh
+
+while getopts "t:" opt; do
+    case $opt in
+        t)
+            file_name_pat=$OPTARG
+            #echo "pat is $file_name_pat"
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+other_parma=$*
+if [ $# -ge 1 ]; then
+    if [ $file_name_pat ]; then
+        runcmd="find . -type f -name $file_name_pat -not -path '*/\.svn/*' -not -path '*/\.git/*' -print0 | xargs -0 grep --color=auto -n -i $other_parma"
+        echo $runcmd
+        eval $runcmd
+    else
+        runcmd="find . -type f -not -path '*/\.svn/*' -not -path '*/\.git/*' -print0 | xargs -0 grep --color=auto -n -i $other_parma"
+        echo $runcmd
+        eval $runcmd
+    fi
+else
+    echo "no search word or parameters"
+fi
+

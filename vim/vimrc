@@ -1,0 +1,422 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+
+" plugin on GitHub repo
+Plugin 'tpope/vim-fugitive'
+
+" plugin from http://vim-scripts.org/vim/scripts.html
+Plugin 'L9'
+
+" Git plugin not hosted on GitHub ----------------------> not needed now
+"Plugin 'git://git.wincent.com/command-t.git'
+
+" git repos on your local machine (i.e. when working on your own plugin)
+"Plugin 'file:///home/gmarik/path/to/plugin'
+
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+"Plugin 'ascenator/L9', {'name': 'newL9'}
+
+" tagbar
+Plugin 'majutsushi/tagbar.git'
+
+" nerdtree
+Plugin 'scrooloose/nerdtree.git'
+
+" useful tools
+Plugin 'tpope/vim-surround'
+Plugin 'vim-scripts/IndexedSearch'
+
+Plugin 'altercation/vim-colors-solarized.git'
+
+" jedi
+Plugin 'davidhalter/jedi-vim'
+
+" super-tab
+Plugin 'ervandew/supertab'
+
+" auto complete tool
+if version >= 740
+"    Plugin 'Valloric/YouCompleteMe'
+endif
+
+"Plugin 'w0rp/ale'
+
+" about c++ highlight
+Plugin 'octol/vim-cpp-enhanced-highlight'
+
+" about checking syntax
+Plugin 'vim-syntastic/syntastic'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+" begin add by jiangfq 2015-07-10
+""""""""""""""""""""""""""""""""""""""""""
+"" General Setting
+""""""""""""""""""""""""""""""""""""""""""
+let mapleader = "\ "
+let g:mapleader = "\ "
+
+set noswapfile
+set backspace=eol,start,indent
+
+" add new file type
+au BufRead,BufNewFile *.pde     set filetype=c
+au BufRead,BufNewFile *.wxml    set filetype=xml
+au BufRead,BufNewFile *.wcss    set filetype=css
+
+set fileencodings=ucs-bom,utf-8,chinese
+
+set fileformat=unix
+
+"""" UI settings """"
+set cmdheight=2
+set scrolloff=10
+
+syntax on
+
+set title
+set textwidth=0
+set nu
+
+set t_Co=256
+" color is important!!
+colorscheme desert
+"colorscheme solarized
+"colorscheme darkburn_ie7
+"color dracula
+
+" highlight Line number
+" Examples: highlight Comment guifg=#11f0c3 guibg=#ff00ff
+
+hi TabLine term=underline cterm=bold ctermfg=9 ctermbg=4
+hi TabLineSel term=bold cterm=bold ctermbg=Red ctermfg=yellow
+hi SpecialKey ctermfg=0 ctermbg=none guifg=#80a0ff
+hi Visual  ctermbg=0 ctermfg=LightGreen
+hi Search ctermbg=0 ctermfg=LightBlue
+
+hi Cursor ctermbg=0 ctermfg=White
+
+hi Pmenu    ctermfg=White ctermbg=0
+hi PmenuSel ctermfg=LightGreen ctermbg=0
+
+" fold method and do not auto fold
+set foldmethod=indent
+set foldlevelstart=99
+
+set nowrap
+set updatetime=500
+
+set showcmd
+set cursorline
+
+" about copy
+" set clipboard=unnamed
+
+" use space to replace tab, can use <C-V><Tab> to insert a real tab
+set expandtab
+" set tab size
+set tabstop=4
+set shiftwidth=4
+" show tab
+set lcs=tab:>-,trail:-
+set list
+" highlight tab
+hi LineNr term=underline cterm=bold ctermfg=Green ctermbg=Black
+
+" about indent
+set autoindent
+
+" About Search
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+" always show the status line
+set laststatus=2
+" format the status line
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ %=c:%c\|l:%l\ \of\ %L\|%p%%\ \ 
+"set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ --%p%%--
+
+" enhance command-line completion
+set wildmenu
+set wildignore=*.o,*~,*.pyc
+
+if has('mouse')
+    set mouse=a
+endif
+
+" map escape
+inoremap jj <esc>
+
+""""""""""""""""""""""""""""
+"" Normal map
+""""""""""""""""""""""""""""
+map <leader>ss :source ~/.vimrc<CR>:noh<CR>
+map <leader>ee :e ~/.vimrc<CR>
+
+" Move between windows
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+map <C-h> <C-w>h
+
+" Copy to CLIPBOARD, and use 'y' to copy to the PRIMARY
+map <leader>y "+y
+map <leader>p "+p
+
+" Open a fully width quickfix window at the bottom of vim
+command! -bang -nargs=? QFix call QFixToggle(<bang>0)
+function! QFixToggle(forced)
+  if exists("g:qfix_win") && a:forced == 0
+    cclose
+    unlet g:qfix_win
+  else
+    "copen 10
+    botright cwindow
+    let g:qfix_win = bufnr("$")
+  endif
+endfunction
+map <F9> :QFix<CR>
+"map <F9> :botright cwindow<CR>
+map <F4> :cp<CR>
+map <F5> :cn<CR>
+
+" Highlighting all the same string according to current selection
+vnoremap <S-F8> :call VisualSelection('f')<CR>
+
+" When you press <leader>r you can search and replace the selected text
+" append /g to the end to replace all
+vmap <leader>r :call VisualSelection('replace')<CR>
+
+map <F3> :execute "lvimgrep /" . expand("<cword>") . "/gj %" <Bar> lw<CR>
+
+" tagbar
+nmap <silent> <F7> :TagbarToggle<CR>
+nmap <silent> <Leader>bb :TagbarToggle<CR>
+"let g:tagbar_ctags_bin='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
+let g:tagbar_left = 1
+let g:tagbar_width = 30
+let g:tagbar_zoomwidth = 70
+let g:tagbar_compact = 1
+let g:tagbar_iconchars = ['▸', '▾']
+let g:tagbar_map_togglefold = 'x'
+"let g:tagbar_map_zoowin = 'z'
+let g:tagbar_map_jump = 'o'
+" for ctags and tabar
+let g:tagbar_type_objc = {
+  \ 'ctagstype': 'objc',
+  \ 'ctagsargs': [
+    \ '-f',
+    \ '-',
+    \ '--excmd=pattern',
+    \ '--extra=',
+    \ '--format=2',
+    \ '--fields=nksaSmt',
+    \ '--options=' . expand('~/.vim/ctags_option_for_objc.config'),
+    \ '--objc-kinds=-N',
+  \ ],
+  \ 'sro': ' ',
+  \ 'kinds': [
+    \ 'c:constant',
+    \ 'e:enum',
+    \ 't:typedef',
+    \ 'i:interface',
+    \ 'P:protocol',
+    \ 'p:property',
+    \ 'I:implementation',
+    \ 'M:method',
+    \ 'g:pragma',
+  \ ],
+\ }
+
+" nerdtree
+map <silent> <F8> :NERDTreeToggle<CR>
+map <silent> <Leader><F8> :NERDTreeFind<CR>
+map tt :NERDTreeToggle<CR>
+map <silent> <Leader>tt :NERDTreeFind<CR>
+let NERDChristmasTree=1
+let NERDTreeAutoCenter=1
+let NERDTreeMouseMode=2
+let NERDTreeShowBookmarks=1
+let NERDTreeWinPos='right'
+let NERDTreeWinSize=40
+let NERDTreeShowLineNumbers=0
+let NERDTreeIgnore=['^cscope.out.in$', '^cscope.out$', '^cscope.files$', '^cscope.out.po$', '^tags$', '^.swp$']
+let NERDTreeMapToggleZoom='z'
+let NERDTreeMinimalUI=1
+
+" cscope setting
+if has("cscope")
+    set csto=1
+    set cst
+    set nocsverb
+    if filereadable("cscope.out")
+        cs add cscope.out
+    endif
+    set csverb
+    set cscopequickfix=s-,g-,c-,t-,e-,f-,i-,d-
+endif
+"s: Find this C symbol
+"g: Find this definition
+"c: Find functions calling this function
+"t: Find this text string
+"d: Find functions called by this function
+"	*gd* will be more helpful without cscope database
+"e: Find this egrep pattern
+"f: Find this file
+"	*gf* will be more helpful without cscope database
+"i: Find files #including this file
+map <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+map <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+map <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+map <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+map <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+map <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+map <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+map <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+map <F6> :cs find d<space>
+
+
+" about jedi-veim
+" let g:jedi#popup_select_first=1
+
+" about super-tab
+let g:SuperTabDefaultCompletionType="<c-n>"
+
+" if menu window has popup, map <CR> as selecting current item.
+inoremap <expr> <CR> pumvisible()?"\<C-Y>":"\<CR>"
+
+" setting of ycm
+"让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
+"set completeopt=longest,menu
+set completeopt-=preview
+let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
+let g:ycm_path_to_python_interpreter='/usr/local/bin/python'
+
+"关掉自作多情的ycm语法检查
+let g:ycm_show_diagnostics_ui = 0
+
+let g:ycm_min_num_of_chars_for_completion=2
+"是否开启语义补全"
+let g:ycm_seed_identifiers_with_syntax=1
+"补全后自动关闭预览窗口"
+let g:ycm_autoclose_preview_window_after_completion=1
+" 禁止缓存匹配项,每次都重新生成匹配项"
+let g:ycm_cache_omnifunc=0
+" 离开插入模式后自动关闭预览窗口"
+let g:ycm_autoclose_preview_window_after_insertion=1
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+"上下左右键行为"
+inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
+inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
+inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : '\<PageDown>'
+inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
+
+set nosmarttab
+
+" setting of w0rp
+" run linter only when save file
+"let g:ale_lint_on_save = 0
+"let g:ale_lint_on_text_changed = 'never'
+"let g:ale_lint_on_enter = 0
+"
+"let g:ale_echo_msg_error_str = 'E'
+"let g:ale_echo_msg_warning_str = 'W'
+"let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+
+" Returns true if paste mode is enabled
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    en
+    return ''
+endfunction
+
+function! CmdLine(str)
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
+endfunction
+
+function! VisualSelection(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    elseif a:direction == '?'
+        call CmdLine("!sdcv " . l:pattern)
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+
+augroup python
+    autocmd!
+    autocmd FileType python
+                \   syntax match myPythonFunction /\k\+\%(\s*(\)\@=/
+                \ | hi def link myPythonFunction Function
+augroup end
+
+" about syntax check
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_python_checkers = ['flake8']
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+
+let g:syntastic_quiet_messages = { "regex": [
+    \ 'E402', 'E501', 'W391', 'Axes3D', 'E303', 'E231', 'E302',
+    \ 'E305', 'E225', 'W191', 'E265', 'F401', 'E266', 'E261', 'E126'
+    \ ] }
+
