@@ -123,7 +123,7 @@ hi TabLine term=underline cterm=bold ctermfg=9 ctermbg=4
 hi TabLineSel term=bold cterm=bold ctermbg=Red ctermfg=yellow
 hi SpecialKey ctermfg=0 ctermbg=none guifg=#80a0ff
 hi Visual  ctermbg=0 ctermfg=LightGreen
-hi Search ctermbg=0 ctermfg=LightBlue
+hi Search ctermbg=0 ctermfg=White ctermbg=DarkCyan
 
 hi Cursor ctermbg=0 ctermfg=White
 
@@ -140,14 +140,15 @@ set updatetime=500
 set showcmd
 set cursorline
 
-" about copy
-" set clipboard=unnamed
 
 " use space to replace tab, can use <C-V><Tab> to insert a real tab
 set expandtab
 " set tab size
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smarttab
+
 " show tab
 set lcs=tab:>-,trail:-
 set list
@@ -156,6 +157,7 @@ hi LineNr term=underline cterm=bold ctermfg=Green ctermbg=Black
 
 " about indent
 set autoindent
+" set smartindent
 
 " About Search
 set incsearch
@@ -193,6 +195,8 @@ map <C-l> <C-w>l
 map <C-h> <C-w>h
 
 " Copy to CLIPBOARD, and use 'y' to copy to the PRIMARY
+set clipboard=unnamed
+set clipboard+=unnamedplus
 map <leader>y "+y
 map <leader>p "+p
 
@@ -232,7 +236,7 @@ let g:tagbar_zoomwidth = 70
 let g:tagbar_compact = 1
 let g:tagbar_iconchars = ['▸', '▾']
 let g:tagbar_map_togglefold = 'x'
-"let g:tagbar_map_zoowin = 'z'
+let g:tagbar_map_zoowin = 'z'
 let g:tagbar_map_jump = 'o'
 " for ctags and tabar
 let g:tagbar_type_objc = {
@@ -309,9 +313,6 @@ map <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 map <F6> :cs find d<space>
 
 
-" about jedi-veim
-" let g:jedi#popup_select_first=1
-
 " about super-tab
 let g:SuperTabDefaultCompletionType="<c-n>"
 
@@ -344,7 +345,6 @@ inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
 inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : '\<PageDown>'
 inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
-set nosmarttab
 
 " setting of w0rp
 " run linter only when save file
@@ -400,6 +400,7 @@ augroup python
     autocmd FileType python
                 \   syntax match myPythonFunction /\k\+\%(\s*(\)\@=/
                 \ | hi def link myPythonFunction Function
+    autocmd FileType python set shiftwidth=2
 augroup end
 
 " about syntax check
@@ -417,6 +418,57 @@ let g:syntastic_check_on_wq = 0
 
 let g:syntastic_quiet_messages = { "regex": [
     \ 'E402', 'E501', 'W391', 'Axes3D', 'E303', 'E231', 'E302',
-    \ 'E305', 'E225', 'W191', 'E265', 'F401', 'E266', 'E261', 'E126'
+    \ 'E305', 'E225', 'W191', 'E265', 'F401', 'E266', 'E261', 'E126',
+    \ 'E111', 'E114',
     \ ] }
+
+
+" about jedi-vim
+if has("nvim")
+    let g:jedi#completions_enabled = 0
+else
+    let g:jedi#popup_select_first = 1
+    " let g:jedi#force_py_version=3
+    " let g:jedi#environment_paths = [$HOME . '/.pyenv/versions']
+
+    " py3 << EOF
+    " import os, sys, pathlib
+    " if 'VIRTUAL_ENV' in os.environ:
+    "     venv = os.getenv('VIRTUAL_ENV')
+    "     site_packages = next(pathlib.Path(venv, 'lib').glob('python*/site-packages'), None)
+    "     if site_packages:
+    "         sys.path.insert(0, str(site_packages))
+    " EOF
+endif
+
+
+if has("nvim")
+    " fix neovim vte bug, refer to: https://github.com/neovim/neovim/wiki/FAQ#nvim-shows-weird-symbols-2-q-when-changing-modes
+    set guicursor=
+
+    " enable python3 provider
+    let g:python_host_prog ='/home/jayce/.pyenv/versions/anaconda2-5.3.0/bin/python'
+    let g:python3_host_prog='/home/jayce/.pyenv/versions/anaconda3-5.3.0/bin/python'
+
+    " Specify a directory for plugins
+    " - For Vim: ~/.vim/plugged
+    " - Avoid using standard Vim directory names like 'plugin'
+    call plug#begin('~/.local/share/nvim/plugged')
+    " Make sure you use single quotes
+
+    " Dark powered asynchronous completion framework
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " python autocomplition
+    Plug 'zchee/deoplete-jedi'
+
+    " Initialize plugin system
+    call plug#end()
+
+    let g:deoplete#enable_at_startup = 1
+
+    " about theme
+    " set background=dark
+endif
+
+set shiftwidth=2
 
