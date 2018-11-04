@@ -44,7 +44,9 @@ Plugin 'scrooloose/nerdtree.git'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/IndexedSearch'
 
+" themes
 Plugin 'altercation/vim-colors-solarized.git'
+Plugin 'dracula/vim'
 
 " jedi
 Plugin 'davidhalter/jedi-vim'
@@ -111,10 +113,10 @@ set nu
 
 set t_Co=256
 " color is important!!
-colorscheme desert
+"colorscheme desert
 "colorscheme solarized
 "colorscheme darkburn_ie7
-"color dracula
+color dracula
 
 " highlight Line number
 " Examples: highlight Comment guifg=#11f0c3 guibg=#ff00ff
