@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v git)" ]; then
     echo 'Error: curl or git is not installed.'
@@ -22,44 +22,54 @@ fi
 if [ ! -d $currentpath/vimdir ]; then
     mkdir -p $currentpath/vimdir
 fi
-ln -sfT $currentpath/vimdir $HOME/.vim
-ln -sfT $currentpath/vimrc  $HOME/.vimrc
+if [ `uname` = 'Darwin' ]; then
+  ln -sfh $currentpath/vimdir $HOME/.vim
+  ln -sfh $currentpath/vimrc  $HOME/.vimrc
+else
+  ln -sfT $currentpath/vimdir $HOME/.vim
+  ln -sfT $currentpath/vimrc  $HOME/.vimrc
+fi
 echo "Link $HOME/.vim   to $currentpath/vimdir"
 echo "Link $HOME/.vimrc to $currentpath/vimrc"
 
-# update neovim config
-read -p "Update neovim config? (y/n, default: y)" yn
-if [ -z "$yn" ]; then
-    update_nvim=yes
-else
-    case $yn in
-        [Yy]* ) echo "aha?"; update_nvim=yes;;
-    esac
-fi
-if [ "$update_nvim" = "yes" ]; then
-    if [ ! -d $HOME/.config/nvim ]; then
-        mkdir -p $HOME/.config/nvim
+# update neovim config if neovim it installed
+if [ -x "$(command -v nvim)" ]; then
+    read -p "Update neovim config? (y/n, default: y)" yn
+    if [ -z "$yn" ]; then
+        update_nvim=yes
+    else
+        case $yn in
+            [Yy]* ) echo "aha?"; update_nvim=yes;;
+        esac
     fi
-    if [ -f $HOME/.config/nvim/init.vim ]; then
-        mv $HOME/.config/nvim/init.vim ./init.vim.old
-        echo "Backup old $HOME/.config/nvim/init.vim to ./init.vim.old"
+    if [ "$update_nvim" = "yes" ]; then
+        if [ ! -d $HOME/.config/nvim ]; then
+            mkdir -p $HOME/.config/nvim
+        fi
+        if [ -f $HOME/.config/nvim/init.vim ]; then
+            mv $HOME/.config/nvim/init.vim ./init.vim.old
+            echo "Backup old $HOME/.config/nvim/init.vim to ./init.vim.old"
+        fi
+        ln -s $currentpath/vimrc $HOME/.config/nvim/init.vim
+        echo "Link $HOME/.config/nvim/init.vim to $currentpath/vimrc"
     fi
-    ln -s $currentpath/vimrc $HOME/.config/nvim/init.vim
-    echo "Link $HOME/.config/nvim/init.vim to $currentpath/vimrc"
 fi
 
 # for Vim install plugin Vundle if not installed
-if [ ! -d $currentpath/vimdir/bundle/Vundle.vim ]; then
-    mkdir -p $currentpath/vimdir/bundle/Vundle.vim
-    git clone https://github.com/VundleVim/Vundle.vim.git $currentpath/vim/bundle/Vundle.vim
-    echo "For Vim, installed Vundle.vim to $currentpath/vimdir/bundle/Vundle.vim"
+vundle_path=$currentpath/vimdir/bundle/Vundle.vim
+if [ ! -d $vundle_path ]; then
+    mkdir -p $vundle_path
+    git clone https://github.com/VundleVim/Vundle.vim.git $vundle_path
+    echo "For Vim, installed Vundle.vim to $vundle_path"
 fi
+
 # for Neovim, install vim-plug if not installed
 if [ -x "$(command -v nvim)" ]; then
-    if [ ! -f $HOME/.local/share/nvim/site/autoload/plug.vim ]; then
-        curl -fLo $HOME/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    vim_plug_path=$HOME/.local/share/nvim/site/autoload/plug.vim
+    if [ ! -f $vim_plug_path ]; then
+        curl -fLo $vim_plug_path --create-dirs \
           https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        echo "For neovim, installed vim-plug to $HOME/.local/share/nvim/site/autoload/plug.vim"
+        echo "For neovim, installed vim-plug to $vim_plug_path"
     fi
 fi
 
