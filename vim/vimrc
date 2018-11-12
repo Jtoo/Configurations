@@ -67,6 +67,9 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 " about checking syntax
 Plugin 'vim-syntastic/syntastic'
 
+" about status line
+Plugin 'vim-airline/vim-airline'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -124,7 +127,7 @@ color dracula
 hi TabLine term=underline cterm=bold ctermfg=9 ctermbg=4
 hi TabLineSel term=bold cterm=bold ctermbg=Red ctermfg=yellow
 hi SpecialKey ctermfg=0 ctermbg=none guifg=#80a0ff
-hi Visual  ctermbg=0 ctermfg=LightGreen
+hi Visual ctermbg=DarkGray ctermfg=Green
 hi Search ctermbg=0 ctermfg=White ctermbg=DarkCyan
 
 hi Cursor ctermbg=0 ctermfg=White
@@ -279,7 +282,7 @@ let NERDTreeShowBookmarks=1
 let NERDTreeWinPos='right'
 let NERDTreeWinSize=40
 let NERDTreeShowLineNumbers=0
-let NERDTreeIgnore=['^cscope.out.in$', '^cscope.out$', '^cscope.files$', '^cscope.out.po$', '^tags$', '^.swp$']
+let NERDTreeIgnore=['^cscope.out.in$', '^cscope.out$', '^cscope.files$', '^cscope.out.po$', '^tags$', '^.swp$', '.pyc$']
 let NERDTreeMapToggleZoom='z'
 let NERDTreeMinimalUI=1
 
